@@ -2,47 +2,52 @@ import React, { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
 import { MENU_API } from "../utils/constants";
+
 const RestaurantMenu = () => {
-  const [resData, setResData] = useState({});
-  const [cardItems, setCarditems] = useState([]);
+  const [resInfo, setResInfo] = useState(null); // Initialize with null instead of an empty object
+
   const { resId } = useParams();
-  console.log("rsid idd", resId)
+
   const fetchData = async () => {
-    const response = await fetch(
-        MENU_API + resId
-    );
-    const json = await response.json();
-    console.log("json data", json);
-    setResData(json?.data?.cards[2]?.card?.card?.info);
-    setCarditems(
-      json?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card
-        ?.card?.carousel
-    );
-    console.log("card itmes", cardItems);
+    const response = await fetch(MENU_API + resId);
+    const json = await response?.json();
+    setResInfo(json?.data);
   };
+  console.log("res info", resInfo);
+  const { name, areaName, cuisines } =
+    resInfo?.cards[2]?.card?.card?.info || {};
+  const itemCards =
+    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[2]?.card?.card
+      ?.itemCards || [];
+  console.log("item cards", itemCards);
+
   useEffect(() => {
     fetchData();
-  }, []);
-  return resData?.length === 0 ? (
-    <Shimmer />
-  ) : (
+  }, [resId]); // Add resId as dependency so it refetches when the resId changes
+
+  // Return loading state (shimmer) while data is being fetched
+  if (!resInfo) {
+    return <Shimmer />;
+  }
+
+  // Destructure values from resInfo once data is available
+
+  return (
     <div>
       <div className="menu">
-        <ul>
-          <h1> {resData?.name}</h1>
-          <h3>{resData?.areaName}</h3>
-          <p>{resData?.cuisines?.join(", ")}</p>
-        </ul>
+        <h1>{name}</h1>
+        <h3>{areaName}</h3>
+        <p>{cuisines?.join(", ")}</p>
       </div>
+
       <div className="itemCard">
         <ul>
-          {cardItems?.map((item) => (
-            <li key={item.dish.info.id}>
-              {item.dish.info.name} : RS:{" "}
-              {item.dish.info.defaultPrice / 100 ||
-                item.dish.info?.variantsV2?.pricingModels?.[0]?.price ||
-                100}
-            </li>
+          {itemCards?.map((item) => (
+            
+            <li key={item.card.info.id}>{item?.card.info.name} RS : {item.card.info.price/100}</li>
+           
+
+
           ))}
         </ul>
       </div>
