@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import RestaurantCard from "./Restaurant";
+import RestaurantCard, { withPromotedRestaurantCard } from "./Restaurant";
 import resList from "../utils/mockData";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
@@ -8,7 +8,7 @@ function Body() {
   const [newArray, setNewArray] = useState([]);
   const [filter, setFilter] = useState([]); // Save the original unfiltered data
   const [search, setSearch] = useState("");
-
+  const PromotedRestaurantCard = withPromotedRestaurantCard(RestaurantCard);
   // Fetch data when component mounts
   useEffect(() => {
     fetchData();
@@ -28,21 +28,21 @@ function Body() {
 
       // Parse the response data as JSON
       const data = await response.json();
-      console.log("data", data);
+   
 
       // Assuming the restaurant list is in data.data.restaurants
       const restaurantList =
         data?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle
           ?.restaurants;
-      console.log("hii", restaurantList);
+ 
 
       // Set both the newArray (filtered results) and filter (original unfiltered data)
       setNewArray(restaurantList);
       setFilter(restaurantList); // Save the original data for future filtering
-      console.log("Fetched restaurants:", data);
+      
     } catch (error) {
       // Handle any errors that occur during the fetch
-      console.error("Error fetching data:", error);
+   
     }
   };
 
@@ -96,7 +96,12 @@ function Body() {
       <div className="flex flex-wrap ">
         {newArray.map((restaurant) => (
           <Link to={`/restaurant/${restaurant.info.id}`}>
-            <RestaurantCard key={restaurant.info.id} resData={restaurant} />
+            {console.log("test opened", restaurant.info.availability.opened)}
+            {restaurant.info.availability.opened ? (
+              <PromotedRestaurantCard  key={restaurant.info.id} resData={restaurant}/>
+            ) : (
+              <RestaurantCard key={restaurant.info.id} resData={restaurant} />
+            )}
           </Link>
         ))}
       </div>

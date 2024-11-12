@@ -3,11 +3,9 @@ import { CDN_URL } from "../utils/constants";
 
 const RestaurantCard = (props) => {
   const { resData } = props;
-  console.log("resdata print", resData);
   
   return (
     <div className="m-4 p-4 bg-slate-100 w-[250px] rounded-lg hover:scale-110 duration-300">
-      {console.log("resdata from restaurant.....", resData?.info?.name)}
       <img
         src={CDN_URL + resData?.info?.cloudinaryImageId}
         alt="Restaurant"
@@ -26,6 +24,16 @@ const RestaurantCard = (props) => {
   );
 };
 
+export const withPromotedRestaurantCard = (RestaurantCard)=>{
+  return (props)=>{
+    return(<>
+    <label>
+      opened
+    </label>
+    <RestaurantCard {...props}/>
+    </>)
+  }
+}
 // PropTypes validation
 RestaurantCard.propTypes = {
   resData: PropTypes.shape({

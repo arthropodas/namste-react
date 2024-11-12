@@ -6,12 +6,12 @@ import { useSelector } from "react-redux";
 
 const Header = () => {
   const [login, setLogin] = useState(false);
-  console.log("header is redner");
+
 
   const cart = useSelector((store)=>store.cart.items)
 
   const isOnline = useIsOnline();
-  console.log("hi is onlei", isOnline);
+
 
   return (
     <div className="flex justify-between bg-pink-50 shadow-sm">
