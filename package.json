@@ -3,7 +3,9 @@
     "buffer": "^6.0.3",
     "parce": "^1.2.8",
     "parcel": "^2.12.0",
-    "process": "^0.11.10"
+    "postcss": "^8.4.48",
+    "process": "^0.11.10",
+    "tailwindcss": "^3.4.14"
   },
   "name": "namaste-react",
   "version": "1.0.0",
@@ -24,6 +26,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.7",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0"

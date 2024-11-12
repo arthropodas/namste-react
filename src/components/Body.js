@@ -51,27 +51,33 @@ function Body() {
       <Shimmer />
     </div>
   ) : (
-    <div>
-      <div className="search">
+    <div className="filter">
+      <div className="search m-4 p-4  flex justify-center ">
         <input
+          className="search m-4 p-4 rounded-2xl border-show outline"
           placeholder="search food"
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
           }}
         />
-        <button
-          onClick={() => {
-            // Filter the original data (filter) by search term
-            const filteredData = filter.filter((restaurant) =>
-              restaurant.info.name.toLowerCase().includes(search.toLowerCase())
-            );
-            setNewArray(filteredData); // Update newArray with the filtered results
-          }}
-          className="search-btn"
-        >
-          search
-        </button>
+        <div className="flex">
+          <button
+            className="search m-4 p-4 items-center rounded-2xl bg-blue-500 text-white"
+            onClick={() => {
+              // Filter the original data (filter) by search term
+              const filteredData = filter.filter((restaurant) =>
+                restaurant.info.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase())
+              );
+              setNewArray(filteredData); // Update newArray with the filtered results
+            }}
+            // className="search-btn"
+          >
+            search
+          </button>
+        </div>
       </div>
 
       <button
@@ -87,7 +93,7 @@ function Body() {
         Filter High Rated
       </button>
 
-      <div className="res-container">
+      <div className="flex flex-wrap ">
         {newArray.map((restaurant) => (
           <Link to={`/restaurant/${restaurant.info.id}`}>
             <RestaurantCard key={restaurant.info.id} resData={restaurant} />

@@ -1,66 +1,99 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const CodeSubmit = () => {
-  const [code, setCode] = useState('');
-  const [language, setLanguage] = useState('python');
-  const [inputData, setInputData] = useState('');
-  const [result, setResult] = useState(null);
+const Compiler = () => {
+  const [codingTest, setCodingTest] = useState(null); // Store question and template
+  const [code, setCode] = useState(""); // User's code input
+  const [language, setLanguage] = useState("python"); // Default language
+  const [feedback, setFeedback] = useState(""); // Feedback from backend
+  const [loading, setLoading] = useState(false); // Loading state
 
-  const handleSubmit = async () => {
+  // Fetch the coding test question and code template on component mount
+  useEffect(() => {
+    fetchCodingTest();
+  }, [language]);
+
+  // Function to fetch the coding test question and code template
+  const fetchCodingTest = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/users/compiler', new URLSearchParams({
-        code: code,
-        language: language,
-        input_data: inputData,
-      }));
-      setResult(response.data);
+      const response = await axios.get(`http://127.0.0.1:8000/users/compiler`, { params: { language } });
+      setCodingTest(response.data);
+      setCode(response.data.template); // Prefill with the fetched template
     } catch (error) {
-      setResult({ error: error.response ? error.response.data.error : 'Unknown error' });
+      console.error("Error fetching coding test:", error);
     }
+  };
+
+  // Function to handle the code submission
+  const submitCode = async () => {
+    if (!code) {
+      alert("Please enter some code.");
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const response = await axios.post(`http://127.0.0.1:8000/users/compiler`, { code, language });
+      setFeedback(response.data.feedback); // Set the feedback from the server
+    } catch (error) {
+      console.error("Error submitting code:", error);
+      setFeedback("There was an error while submitting the code.");
+    }
+    
+    setLoading(false);
   };
 
   return (
     <div>
-      <h1>Code Submit</h1>
-      <textarea
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        placeholder="Enter your code here"
-        rows="10"
-        cols="50"
-      ></textarea>
-      <br />
-      <select
-        value={language}
-        onChange={(e) => setLanguage(e.target.value)}
-      >
-        <option value="python">Python</option>
-        <option value="javascript">JavaScript</option>
-        <option value="php">PHP</option>
-        <option value="java">Java</option>
-        <option value="c">C</option>
-        <option value="cpp">C++</option>
-      </select>
-      <br />
-      <textarea
-        value={inputData}
-        onChange={(e) => setInputData(e.target.value)}
-        placeholder="Enter input data"
-        rows="5"
-        cols="50"
-      ></textarea>
-      <br />
-      <button onClick={handleSubmit}>Submit Code</button>
+      <h1>Coding Test</h1>
 
-      {result && (
+      {/* Display the question */}
+      {codingTest ? (
         <div>
-          <h2>Result:</h2>
-          <pre>{JSON.stringify(result, null, 2)}</pre>
+          <h2>Question: {codingTest.question_text}</h2>
+        </div>
+      ) : (
+        <p>Loading question...</p>
+      )}
+
+      {/* Code input field */}
+      <div>
+        <textarea
+          className="outline"
+          rows="10"
+          cols="50"
+          placeholder="Write your code here..."
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+        />
+      </div>
+
+      {/* Language Selector */}
+      <div>
+        <label>Language: </label>
+        <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+          <option value="javascript">JavaScript</option>
+          {/* Add more languages as needed */}
+        </select>
+      </div>
+
+      {/* Submit Button */}
+      <button onClick={submitCode} disabled={loading} className="search m-4 p-4 items-center rounded-2xl bg-blue-500 text-white">
+        {loading ? "Submitting..." : "Submit Code"}
+      </button>
+
+      {/* Feedback Section */}
+      {feedback && (
+        <div>
+          <h3>Feedback:</h3>
+          <pre>{feedback}</pre>
         </div>
       )}
     </div>
   );
 };
 
-export default CodeSubmit;
+export default Compiler;
