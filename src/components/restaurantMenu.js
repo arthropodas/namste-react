@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
 import useRestaurantMenuHook from "../utils/hooks/useRestaurantMenuHook";
+import ItemList from "./itemList";
 
 const RestaurantMenu = () => {
   const { resId } = useParams();
@@ -29,16 +30,14 @@ const RestaurantMenu = () => {
         <p>{cuisines?.join(", ")}</p>
       </div>
 
-      <div className="itemCard">
-        <ul>
+      <div className="flex flex-wrap columns-4 justify-center">
+
           {itemCards?.map((item) => (
-            <li key={item.card.info.id}>
-              {item?.card.info.name} RS : {item.card.info.price / 100}
-            </li>
+            <ItemList itemCards={item} />
           ))}
-        </ul>
+        </div>
       </div>
-    </div>
+ 
   );
 };
 
