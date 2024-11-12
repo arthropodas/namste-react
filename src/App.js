@@ -8,6 +8,7 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Error from "./components/Error";
 import RestaurantMenu from "./components/restaurantMenu";
+import CompilerAdmin from "./components/CompilerAdmin";
 
 // Lazy load the Grocery component
 const Grocery = lazy(() => import("./components/Grocery"));
@@ -15,8 +16,10 @@ const Grocery = lazy(() => import("./components/Grocery"));
 const AppLayout = () => {
   return (
     <div className="app">
-      <Header />
-      <Outlet />
+      <Header /> 
+       <Outlet />
+      {/* <Compiler/>
+      <CompilerAdmin/> */}
     </div>
   );
 };
