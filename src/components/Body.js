@@ -73,7 +73,7 @@ function Body() {
               );
               setNewArray(filteredData); // Update newArray with the filtered results
             }}
-            // className="search-btn"
+         
           >
             search
           </button>
